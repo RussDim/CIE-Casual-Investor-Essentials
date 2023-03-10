@@ -1,0 +1,6 @@
+#news-table tr:nth-child(even) {
+    fill: #c7c5c5;
+  }
+#news-table tr:nth-child(odd) {
+fill: #fffcfc;
+}
