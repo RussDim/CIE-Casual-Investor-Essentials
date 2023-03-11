@@ -9,7 +9,7 @@ Data Scientist interested in supporting individuals in their pursuit of financia
 
 **Target audience:** 
 
-The main target audience of the app is casual investors with limited access to financial data who are interested in monitoring companies in which they are interested in investing or currently own shares in.
+The main target audience of the app is casual investors with limited access to financial data who are interested in monitoring companies in which they are interested in investing or in which they currently own shares.
 
 Beginner investors are often overwhelmed by the flood of data available online on any given financial instrument.  The Casual Investor Essentials (CIE) app aims to simplify things and provide an update on a stock price along with the most recent news articles regarding the stock.  In this way the user does not have to switch between multiple screens to get a quick update on what is happening with their company of interest.
 
