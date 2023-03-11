@@ -36,7 +36,7 @@ def get_news_articles(ticker):
 app = dash.Dash(__name__)  #external_stylesheets=['/css/app_stylesheet.css']
 
 app.layout = html.Div(style={'backgroundColor': '#f2f2f2'}, children=[
-    html.H1('SEQuery: Stock Essentials Queries', style={'textAlign': 'center', 'marginBottom': '50px'}),
+    html.H1('CIE: Casual Investor Essentials', style={'textAlign': 'center', 'marginBottom': '50px'}),
     html.Div([
         html.Label('Enter a stock ticker'),
         dcc.Input(id='stock-ticker-input', value='AAPL', type='text')
