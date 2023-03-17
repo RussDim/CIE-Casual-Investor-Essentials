@@ -1,7 +1,3 @@
-"""
-add pretty layout
-"""
-
 import pandas as pd
 import plotly.graph_objs as go
 import yfinance as yf
@@ -10,6 +6,7 @@ import dash
 from dash import dcc
 from dash import html
 from dash.dependencies import Input, Output, State
+import dash_bootstrap_components as dbc
 
 
 # Yahoo Finance API
@@ -33,7 +30,7 @@ def get_news_articles(ticker):
 
 
 # Dash app
-app = dash.Dash(__name__)  #external_stylesheets=['/css/app_stylesheet.css']
+app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 app.layout = html.Div(style={'backgroundColor': '#f2f2f2'}, children=[
     html.H1('CIE: Casual Investor Essentials', style={'textAlign': 'center', 'marginBottom': '50px'}),
@@ -45,7 +42,7 @@ app.layout = html.Div(style={'backgroundColor': '#f2f2f2'}, children=[
         html.Label('Enter number of days of history'),
         dcc.Input(id='history-days-input', value=365, type='number')
     ]),
-    html.Button('Update', id='update-button', style={'marginTop': '10px', 'marginBottom': '10px', 'backgroundColor': '#4CAF50', 'color': 'white'}),
+    dbc.Button('Update', id='update-button', style={'marginTop': '10px', 'marginBottom': '10px', 'backgroundColor': '#4CAF50', 'color': 'white'}),
     dcc.Graph(id='stock-chart', figure={}, style={'marginBottom': '30px'}),
     html.Div([
         html.H3('Latest News', style={'marginBottom': '10px'}),
@@ -60,7 +57,7 @@ app.layout = html.Div(style={'backgroundColor': '#f2f2f2'}, children=[
                 clearable=False,
                 style={'width': '200px'}
             ),
-            html.Button('Sort', id='sort-button', style={'backgroundColor': '#4CAF50', 'color': 'white', 'marginLeft': '10px'})
+            dbc.Button('Sort', id='sort-button', style={'backgroundColor': '#4CAF50', 'color': 'white', 'marginLeft': '10px'})
         ], style={'display': 'flex', 'alignItems': 'center'})
     ], style={'marginBottom': '30px', 'padding': '10px', 'backgroundColor': '#f9f9f9'}),
     html.Table(id='news-table', children=[], style={
