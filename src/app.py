@@ -43,7 +43,7 @@ app.layout = html.Div(style={'backgroundColor': '#f2f2f2'}, children=[
         dcc.Input(id='history-days-input', value=365, type='number')
     ]),
     dbc.Button('Update', id='update-button', style={'marginTop': '10px', 'marginBottom': '10px', 'backgroundColor': '#4CAF50', 'color': 'white'}),
-    dcc.Graph(id='stock-chart', figure={}, style={'marginBottom': '30px'}),
+    dcc.Graph(id='stock-chart', figure={}),
     html.Div([
         html.H3('Latest News', style={'marginBottom': '10px'}),
         html.Div([
