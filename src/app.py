@@ -126,6 +126,7 @@ def update_news_table(n_clicks, sort_clicks, ticker='AAPL', sort_by='recent', da
         ]))
     return html.Table(table_rows)
 
+server = app.server
 
 if __name__ == '__main__':
     app.run_server(debug=True)  
