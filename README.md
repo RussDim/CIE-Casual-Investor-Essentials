@@ -66,7 +66,7 @@ dash
 dash.dependencies
 ```
 
-3. Finally, move to the directory and run the following command to run the app locally:
+3. Finally, move to the `src` directory and run the following command to run the app locally:
 
 ```{Python}
 python app.py
