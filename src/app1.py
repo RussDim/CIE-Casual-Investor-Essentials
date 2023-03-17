@@ -3,7 +3,7 @@ import plotly.graph_objs as go
 import yfinance as yf
 from GoogleNews import GoogleNews
 import dash
-from dash import dcc, dash_table
+from dash import dcc
 from dash import html
 from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
@@ -60,14 +60,10 @@ app.layout = html.Div(style={'backgroundColor': '#f2f2f2'}, children=[
             dbc.Button('Sort', id='sort-button', style={'backgroundColor': '#4CAF50', 'color': 'white', 'marginLeft': '10px'})
         ], style={'display': 'flex', 'alignItems': 'center'})
     ], style={'marginBottom': '30px', 'padding': '10px', 'backgroundColor': '#f9f9f9'}),
-    dash_table.DataTable(id='news-table', columns=[{"name": i, "id": i} for i in ['Title', 'Description', 'Date', 'Link']],
-        style_table={
-            'width': '100%',
-            'backgroundColor': 'white',  
-            'borderCollapse': 'collapse',
-            'minwidth':'800px'
-        }
-    )
+    html.Table(id='news-table', children=[], style={
+        'width': '100%',
+        'backgroundColor': 'white',  
+        'borderCollapse': 'collapse'})
 ])
 
 
@@ -92,7 +88,7 @@ def update_stock_chart(n_clicks, ticker='AAPL', days=365):
         return figure
 
 @app.callback(
-    Output('news-table', 'data'),
+    Output('news-table', 'children'),
     Input('update-button', 'n_clicks'),
     Input('sort-button', 'n_clicks'),
     State('stock-ticker-input', 'value'),
@@ -106,8 +102,14 @@ def update_news_table(n_clicks, sort_clicks, ticker='AAPL', sort_by='recent', da
         else:
             news_articles_df = news_articles_df.sort_values('Description', ascending=False)
         news_articles_df = news_articles_df.head(10)
-        table_data = news_articles_df.to_dict('records')
-        return table_data
+        table_rows = [html.Tr(
+            [html.Th(col, style={'width': '7%'}) if col == 'Date' else html.Th(col) for col in news_articles_df.columns])]
+        for i in range(len(news_articles_df)):
+            table_rows.append(html.Tr([
+                html.Td(news_articles_df.iloc[i][col]) if col != 'Link' else html.Td(html.A('Link', href=news_articles_df.iloc[i]['Link']))
+                for col in news_articles_df.columns
+            ]))
+        return html.Table(table_rows)
     else:
         news_articles_df = get_news_articles(ticker)
         if sort_by == 'recent':
@@ -115,8 +117,14 @@ def update_news_table(n_clicks, sort_clicks, ticker='AAPL', sort_by='recent', da
         else:
             news_articles_df = news_articles_df.sort_values('Description', ascending=False)
         news_articles_df = news_articles_df.head(10)
-        table_data = news_articles_df.to_dict('records')
-        return table_data
+        table_rows = [html.Tr(
+            [html.Th(col, style={'width': '7%'}) if col == 'Date' else html.Th(col) for col in news_articles_df.columns])]
+        for i in range(len(news_articles_df)):
+            table_rows.append(html.Tr([
+                html.Td(news_articles_df.iloc[i][col]) if col != 'Link' else html.Td(html.A('Link', href=news_articles_df.iloc[i]['Link']))
+            for col in news_articles_df.columns
+        ]))
+    return html.Table(table_rows)
 
 server = app.server
 
