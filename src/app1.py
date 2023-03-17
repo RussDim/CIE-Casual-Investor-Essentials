@@ -26,7 +26,8 @@ def get_news_articles(ticker):
     articles_df = pd.DataFrame(news_articles, columns=['title', 'desc', 'date', 'source', 'link'])
     articles_df = articles_df[['title', 'desc', 'date', 'link']]
     articles_df = articles_df.rename(columns={'title': 'Title', 'desc': 'Description', 'date': 'Date', 'link': 'Link'})
-    return articles_df
+        # Save DataFrame as CSV file
+    articles_df.to_csv('./articles.csv', index=False)
 
 
 # Dash app
@@ -96,7 +97,8 @@ def update_stock_chart(n_clicks, ticker='AAPL', days=365):
 )
 def update_news_table(n_clicks, sort_clicks, ticker='AAPL', sort_by='recent', days=365):
     if n_clicks is None and sort_clicks is None:
-        news_articles_df = get_news_articles(ticker)
+        get_news_articles(ticker)
+        news_articles_df = pd.read_csv('./articles.csv')
         if sort_by == 'recent':
             news_articles_df = news_articles_df.sort_values('Date', ascending=True)
         else:
@@ -111,7 +113,8 @@ def update_news_table(n_clicks, sort_clicks, ticker='AAPL', sort_by='recent', da
             ]))
         return html.Table(table_rows)
     else:
-        news_articles_df = get_news_articles(ticker)
+        get_news_articles(ticker)
+        news_articles_df = pd.read_csv('./articles.csv')
         if sort_by == 'recent':
             news_articles_df = news_articles_df.sort_values('Date', ascending=True)
         else:
