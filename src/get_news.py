@@ -1,5 +1,8 @@
+# Google News API
 import pandas as pd
 from GoogleNews import GoogleNews
+
+
 
 def get_news_articles(ticker):
     googlenews = GoogleNews(lang='en')
@@ -10,4 +13,4 @@ def get_news_articles(ticker):
     articles_df = articles_df[['title', 'desc', 'date', 'link']]
     articles_df = articles_df.rename(columns={'title': 'Title', 'desc': 'Description', 'date': 'Date', 'link': 'Link'})
         # Save DataFrame as CSV file
-    articles_df.to_csv('./articles.csv', index=False)
+    articles_df.to_csv('articles.csv', index=False)
