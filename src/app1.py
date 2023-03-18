@@ -8,6 +8,7 @@ from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
 import requests
 import xml.etree.ElementTree as ET
+from bs4 import BeautifulSoup
 
 def get_news(stock_ticker):
 
@@ -23,8 +24,13 @@ def get_news(stock_ticker):
         title = item.find("title").text
         link = item.find("link").text
         pub_date = item.find("pubDate").text
-        description = item.find("description").text
+        description_html = item.find("description").text
+        # Parse the HTML and extract the plain text
+        soup = BeautifulSoup(description_html, 'html.parser')
+        description = soup.get_text()
         articles.append({"Title": title, "Description": description, "Date": pub_date, "Link": link})
+        if len(articles) >= 10:
+            break
 
     # Convert the list of dictionaries into a Pandas DataFrame
     df = pd.DataFrame(articles)
