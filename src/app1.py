@@ -17,19 +17,6 @@ def get_stock_data(ticker, days):
     return dates, closing_prices
 
 
-# # Google News API
-# def get_news_articles(ticker):
-#     googlenews = GoogleNews(lang='en')
-#     googlenews.search(ticker)
-#     news_articles = googlenews.result()
-#     links = googlenews.get_links()
-#     articles_df = pd.DataFrame(news_articles, columns=['title', 'desc', 'date', 'source', 'link'])
-#     articles_df = articles_df[['title', 'desc', 'date', 'link']]
-#     articles_df = articles_df.rename(columns={'title': 'Title', 'desc': 'Description', 'date': 'Date', 'link': 'Link'})
-#         # Save DataFrame as CSV file
-#     articles_df.to_csv('articles.csv', index=False)
-
-
 # Dash app
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
@@ -97,7 +84,10 @@ def update_stock_chart(n_clicks, ticker='AAPL', days=365):
 )
 def update_news_table(n_clicks, sort_clicks, ticker='AAPL', sort_by='recent', days=365):
     if n_clicks is None and sort_clicks is None:
+        print('starting get news articles in update')
         get_news_articles(ticker)
+        print('after get news articles in update')
+
         news_articles_df = pd.read_csv('articles.csv')
         if sort_by == 'recent':
             news_articles_df = news_articles_df.sort_values('Date', ascending=True)
@@ -113,7 +103,9 @@ def update_news_table(n_clicks, sort_clicks, ticker='AAPL', sort_by='recent', da
             ]))
         return html.Table(table_rows)
     else:
+        print('starting get news articles in else update')
         get_news_articles(ticker)
+        print('after get news articles in else update')
         news_articles_df = pd.read_csv('articles.csv')
         if sort_by == 'recent':
             news_articles_df = news_articles_df.sort_values('Date', ascending=True)
