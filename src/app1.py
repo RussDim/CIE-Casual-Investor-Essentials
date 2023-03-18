@@ -1,13 +1,36 @@
 import pandas as pd
 import plotly.graph_objs as go
 import yfinance as yf
-from GoogleNews import GoogleNews
 import dash
 from dash import dcc
 from dash import html
 from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
-from get_news import get_news_articles
+import requests
+import xml.etree.ElementTree as ET
+
+def get_news(stock_ticker):
+
+    url = f"https://news.google.com/rss/search?q={stock_ticker}&hl=en-US&gl=US&ceid=US:en"
+    response = requests.get(url)
+
+    # Parse the response XML using ElementTree
+    root = ET.fromstring(response.text)
+
+    # Extract the article data from the XML and store it in a list of dictionaries
+    articles = []
+    for item in root.findall("./channel/item"):
+        title = item.find("title").text
+        link = item.find("link").text
+        pub_date = item.find("pubDate").text
+        description = item.find("description").text
+        articles.append({"Title": title, "Description": description, "Date": pub_date, "Link": link})
+
+    # Convert the list of dictionaries into a Pandas DataFrame
+    df = pd.DataFrame(articles)
+
+    # Print the DataFrame
+    return df.head(10)
 
 
 
@@ -86,7 +109,7 @@ def update_stock_chart(n_clicks, ticker='AAPL', days=365):
 )
 def update_news_table(n_clicks, sort_clicks, ticker='AAPL', sort_by='recent', days=365):
     if n_clicks is None and sort_clicks is None:
-        news_articles_df = pd.read_csv('articles.csv')
+        news_articles_df = get_news(ticker)
         if sort_by == 'recent':
             news_articles_df = news_articles_df.sort_values('Date', ascending=True)
         else:
@@ -101,7 +124,7 @@ def update_news_table(n_clicks, sort_clicks, ticker='AAPL', sort_by='recent', da
             ]))
         return html.Table(table_rows)
     else:     
-        news_articles_df = pd.read_csv('articles.csv')
+        news_articles_df = get_news(ticker)
         if sort_by == 'recent':
             news_articles_df = news_articles_df.sort_values('Date', ascending=True)
         else:
