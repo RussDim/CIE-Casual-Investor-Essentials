@@ -10,6 +10,8 @@ import requests
 import xml.etree.ElementTree as ET
 import re
 
+
+# Google news http requests
 def get_news(stock_ticker):
 
     url = f"https://news.google.com/rss/search?q={stock_ticker}&hl=en-US&gl=US&ceid=US:en"

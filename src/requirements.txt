@@ -4,7 +4,4 @@ dash_bootstrap_components == 1.4.0
 plotly ==5.13.1
 GoogleNews
 yfinance==0.2.12
-requests
-re
-xml.etree.ElementTree as ET
 gunicorn
