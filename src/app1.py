@@ -8,7 +8,7 @@ from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
 import requests
 import xml.etree.ElementTree as ET
-from bs4 import BeautifulSoup
+import re
 
 def get_news(stock_ticker):
 
@@ -25,10 +25,13 @@ def get_news(stock_ticker):
         link = item.find("link").text
         pub_date = item.find("pubDate").text
         description_html = item.find("description").text
-        # Parse the HTML and extract the plain text
-        soup = BeautifulSoup(description_html, 'html.parser')
-        description = soup.get_text()
-        articles.append({"Title": title, "Description": description, "Date": pub_date, "Link": link})
+        # Use regular expressions to extract the article summary from the HTML
+        description_match = re.search(r'<font.*?>(.*?)</font>', description_html, re.DOTALL)
+        if description_match:
+            description = description_match.group(1).strip()
+        else:
+            description = ""
+        articles.append({"Title": title, "Source": description, "Date": pub_date, "Link": link})
         if len(articles) >= 10:
             break
 
@@ -119,10 +122,10 @@ def update_news_table(n_clicks, sort_clicks, ticker='AAPL', sort_by='recent', da
         if sort_by == 'recent':
             news_articles_df = news_articles_df.sort_values('Date', ascending=True)
         else:
-            news_articles_df = news_articles_df.sort_values('Description', ascending=False)
+            news_articles_df = news_articles_df.sort_values('Source', ascending=False)
         news_articles_df = news_articles_df.head(10)
         table_rows = [html.Tr(
-            [html.Th(col, style={'width': '7%'}) if col == 'Date' else html.Th(col) for col in news_articles_df.columns])]
+            [html.Th(col, style={'width': '17%'}) if col == 'Date' else html.Th(col) for col in news_articles_df.columns])]
         for i in range(len(news_articles_df)):
             table_rows.append(html.Tr([
                 html.Td(news_articles_df.iloc[i][col]) if col != 'Link' else html.Td(html.A('Link', href=news_articles_df.iloc[i]['Link']))
@@ -134,10 +137,10 @@ def update_news_table(n_clicks, sort_clicks, ticker='AAPL', sort_by='recent', da
         if sort_by == 'recent':
             news_articles_df = news_articles_df.sort_values('Date', ascending=True)
         else:
-            news_articles_df = news_articles_df.sort_values('Description', ascending=False)
+            news_articles_df = news_articles_df.sort_values('Source', ascending=False)
         news_articles_df = news_articles_df.head(10)
         table_rows = [html.Tr(
-            [html.Th(col, style={'width': '7%'}) if col == 'Date' else html.Th(col) for col in news_articles_df.columns])]
+            [html.Th(col, style={'width': '17%'}) if col == 'Date' else html.Th(col) for col in news_articles_df.columns])]
         for i in range(len(news_articles_df)):
             table_rows.append(html.Tr([
                 html.Td(news_articles_df.iloc[i][col]) if col != 'Link' else html.Td(html.A('Link', href=news_articles_df.iloc[i]['Link']))
