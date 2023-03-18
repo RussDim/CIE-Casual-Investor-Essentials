@@ -8,6 +8,10 @@ from dash import html
 from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
 from get_news import get_news_articles
+import logging
+
+logging.basicConfig(level=logging.INFO)
+
 
 # Yahoo Finance API
 def get_stock_data(ticker, days):
@@ -84,9 +88,8 @@ def update_stock_chart(n_clicks, ticker='AAPL', days=365):
 )
 def update_news_table(n_clicks, sort_clicks, ticker='AAPL', sort_by='recent', days=365):
     if n_clicks is None and sort_clicks is None:
-        print('starting get news articles in update')
+        logging.info("updating articles")
         get_news_articles(ticker)
-        print('after get news articles in update')
 
         news_articles_df = pd.read_csv('articles.csv')
         if sort_by == 'recent':
@@ -103,9 +106,9 @@ def update_news_table(n_clicks, sort_clicks, ticker='AAPL', sort_by='recent', da
             ]))
         return html.Table(table_rows)
     else:
-        print('starting get news articles in else update')
+        logging.info("updating articles")
         get_news_articles(ticker)
-        print('after get news articles in else update')
+        
         news_articles_df = pd.read_csv('articles.csv')
         if sort_by == 'recent':
             news_articles_df = news_articles_df.sort_values('Date', ascending=True)
