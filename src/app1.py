@@ -15,31 +15,27 @@ def get_news(stock_ticker):
     url = f"https://news.google.com/rss/search?q={stock_ticker}&hl=en-US&gl=US&ceid=US:en"
     response = requests.get(url)
 
-    # Parse the response XML using ElementTree
     root = ET.fromstring(response.text)
 
-    # Extract the article data from the XML and store it in a list of dictionaries
     articles = []
     for item in root.findall("./channel/item"):
         title = item.find("title").text
         link = item.find("link").text
         pub_date = item.find("pubDate").text
         description_html = item.find("description").text
-        # Use regular expressions to extract the article summary from the HTML
         description_match = re.search(r'<font.*?>(.*?)</font>', description_html, re.DOTALL)
         if description_match:
             description = description_match.group(1).strip()
         else:
             description = ""
         articles.append({"Title": title, "Source": description, "Date": pub_date, "Link": link})
-        if len(articles) >= 10:
+        if len(articles) >= 20:
             break
 
-    # Convert the list of dictionaries into a Pandas DataFrame
     df = pd.DataFrame(articles)
 
-    # Print the DataFrame
-    return df.head(10)
+    
+    return df
 
 
 
@@ -73,7 +69,7 @@ app.layout = html.Div(style={'backgroundColor': '#f2f2f2'}, children=[
                 id='news-sort-dropdown',
                 options=[
                     {'label': 'Most Recent', 'value': 'recent'},
-                    {'label': 'Most Relevant', 'value': 'relevant'}
+                    {'label': 'By Source', 'value': 'relevant'}
                 ],
                 value='recent',
                 clearable=False,
@@ -122,8 +118,8 @@ def update_news_table(n_clicks, sort_clicks, ticker='AAPL', sort_by='recent', da
         if sort_by == 'recent':
             news_articles_df = news_articles_df.sort_values('Date', ascending=True)
         else:
-            news_articles_df = news_articles_df.sort_values('Source', ascending=False)
-        news_articles_df = news_articles_df.head(10)
+            news_articles_df = news_articles_df.sort_values('Source', ascending=True)
+        news_articles_df = news_articles_df
         table_rows = [html.Tr(
             [html.Th(col, style={'width': '17%'}) if col == 'Date' else html.Th(col) for col in news_articles_df.columns])]
         for i in range(len(news_articles_df)):
@@ -137,8 +133,8 @@ def update_news_table(n_clicks, sort_clicks, ticker='AAPL', sort_by='recent', da
         if sort_by == 'recent':
             news_articles_df = news_articles_df.sort_values('Date', ascending=True)
         else:
-            news_articles_df = news_articles_df.sort_values('Source', ascending=False)
-        news_articles_df = news_articles_df.head(10)
+            news_articles_df = news_articles_df.sort_values('Source', ascending=True)
+        news_articles_df = news_articles_df
         table_rows = [html.Tr(
             [html.Th(col, style={'width': '17%'}) if col == 'Date' else html.Th(col) for col in news_articles_df.columns])]
         for i in range(len(news_articles_df)):
