@@ -1,12 +1,42 @@
 import pandas as pd
 import plotly.graph_objs as go
 import yfinance as yf
-from GoogleNews import GoogleNews
 import dash
 from dash import dcc
 from dash import html
 from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
+import requests
+import xml.etree.ElementTree as ET
+import re
+
+def get_news(stock_ticker):
+
+    url = f"https://news.google.com/rss/search?q={stock_ticker}&hl=en-US&gl=US&ceid=US:en"
+    response = requests.get(url)
+
+    root = ET.fromstring(response.text)
+
+    articles = []
+    for item in root.findall("./channel/item"):
+        title = item.find("title").text
+        link = item.find("link").text
+        pub_date = item.find("pubDate").text
+        description_html = item.find("description").text
+        description_match = re.search(r'<font.*?>(.*?)</font>', description_html, re.DOTALL)
+        if description_match:
+            description = description_match.group(1).strip()
+        else:
+            description = ""
+        articles.append({"Title": title, "Source": description, "Date": pub_date, "Link": link})
+        if len(articles) >= 20:
+            break
+
+    df = pd.DataFrame(articles)
+
+    
+    return df
+
 
 
 # Yahoo Finance API
@@ -15,18 +45,6 @@ def get_stock_data(ticker, days):
     dates = stock_data.index.date
     closing_prices = stock_data['Close'].values
     return dates, closing_prices
-
-
-# Google News API
-def get_news_articles(ticker):
-    googlenews = GoogleNews(lang='en')
-    googlenews.search(ticker)
-    news_articles = googlenews.result()
-    links = googlenews.get_links()
-    articles_df = pd.DataFrame(news_articles, columns=['title', 'desc', 'date', 'source', 'link'])
-    articles_df = articles_df[['title', 'desc', 'date', 'link']]
-    articles_df = articles_df.rename(columns={'title': 'Title', 'desc': 'Description', 'date': 'Date', 'link': 'Link'})
-    return articles_df
 
 
 # Dash app
@@ -51,7 +69,7 @@ app.layout = html.Div(style={'backgroundColor': '#f2f2f2'}, children=[
                 id='news-sort-dropdown',
                 options=[
                     {'label': 'Most Recent', 'value': 'recent'},
-                    {'label': 'Most Relevant', 'value': 'relevant'}
+                    {'label': 'By Source', 'value': 'relevant'}
                 ],
                 value='recent',
                 clearable=False,
@@ -96,29 +114,29 @@ def update_stock_chart(n_clicks, ticker='AAPL', days=365):
 )
 def update_news_table(n_clicks, sort_clicks, ticker='AAPL', sort_by='recent', days=365):
     if n_clicks is None and sort_clicks is None:
-        news_articles_df = get_news_articles(ticker)
+        news_articles_df = get_news(ticker)
         if sort_by == 'recent':
             news_articles_df = news_articles_df.sort_values('Date', ascending=True)
         else:
-            news_articles_df = news_articles_df.sort_values('Description', ascending=False)
-        news_articles_df = news_articles_df.head(10)
+            news_articles_df = news_articles_df.sort_values('Source', ascending=True)
+        news_articles_df = news_articles_df
         table_rows = [html.Tr(
-            [html.Th(col, style={'width': '7%'}) if col == 'Date' else html.Th(col) for col in news_articles_df.columns])]
+            [html.Th(col, style={'width': '17%'}) if col == 'Date' else html.Th(col) for col in news_articles_df.columns])]
         for i in range(len(news_articles_df)):
             table_rows.append(html.Tr([
                 html.Td(news_articles_df.iloc[i][col]) if col != 'Link' else html.Td(html.A('Link', href=news_articles_df.iloc[i]['Link']))
                 for col in news_articles_df.columns
             ]))
         return html.Table(table_rows)
-    else:
-        news_articles_df = get_news_articles(ticker)
+    else:     
+        news_articles_df = get_news(ticker)
         if sort_by == 'recent':
             news_articles_df = news_articles_df.sort_values('Date', ascending=True)
         else:
-            news_articles_df = news_articles_df.sort_values('Description', ascending=False)
-        news_articles_df = news_articles_df.head(10)
+            news_articles_df = news_articles_df.sort_values('Source', ascending=True)
+        news_articles_df = news_articles_df
         table_rows = [html.Tr(
-            [html.Th(col, style={'width': '7%'}) if col == 'Date' else html.Th(col) for col in news_articles_df.columns])]
+            [html.Th(col, style={'width': '17%'}) if col == 'Date' else html.Th(col) for col in news_articles_df.columns])]
         for i in range(len(news_articles_df)):
             table_rows.append(html.Tr([
                 html.Td(news_articles_df.iloc[i][col]) if col != 'Link' else html.Td(html.A('Link', href=news_articles_df.iloc[i]['Link']))
