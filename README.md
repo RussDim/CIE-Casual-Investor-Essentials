@@ -31,21 +31,23 @@ Based on the author's experience and aim of this app, it combines the best sourc
 Specifically, this app contains one plot and one table:
 
 - The plot presents a history of the daily closing price of a stock.   
-- The table contains four columns including the title of the article, a summary of the article, a link to the source of the article and the date of publishing.
+- The table contains four columns including the title of the article, a source of the article, the date of publishing, and a link to the source of the article.
 
-The app contains three three reactive elements and two update buttons:
+The app contains three reactive elements and two update buttons:
 - An input field where the user can enter the stock ticker of interest
 - An input field where the user can enter the number of days for which they would like to see the history of the stock price.
 - A drop-down menu from which the user can select to sort the articles in terms of relevance and in terms of recency.
 - An update button from which the user can reload both the plot and the news articles table after entering new stock ticker or time period.
-- A sort button next to the drop-down menu from which the user can sort the articles in the desired order.
+- A sort button above the table from which the user can sort the articles by most recent or by source.
 
 This structure is laid out in a simplified one page format with conservative design choices aimed to minimize the cognitive load of the target user who is expected to be an active screen user during his daily life.
 
 ![](img/CIE_live.gif)
 
 
-## Installation
+## Usage and Installation
+
+The CIE app can be accessed on render at the following [link](https://cie-casual-investor-essentials.onrender.com/)
 
 To install `CIE-Casual-Investor-Essentials` locally, you can:
 
@@ -58,12 +60,12 @@ git clone https://github.com/RussDim/CIE-Casual-Investor-Essentials.git
 2. Packages used in by the app:
 
 ```{Python}
-pandas
-plotly
-yfinance
-GoogleNews
-dash
-dash.dependencies
+pandas ~= 1.3.5
+dash ~= 2.8.1
+dash_bootstrap_components ~= 1.4.0
+plotly ~=5.13.1
+yfinance ~=0.2.12
+requests ~=2.28.2
 ```
 
 3. Finally, move to the `src` directory and run the following command to run the app locally:
@@ -80,7 +82,7 @@ If you are interested in contributing to the app we welcome to share your though
 
 ## Contact us
 
-If you would like to help with the development of this Dashboard feel free to contact us after referring to our [contributor's guidelines](CONTRIBUTING.md)
+If you would like to help with the development of this Dash app feel free to contact us after referring to our [contributor's guidelines](CONTRIBUTING.md)
 
 ## License
 
