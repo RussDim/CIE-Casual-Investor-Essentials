@@ -47,7 +47,7 @@ This structure is laid out in a simplified one page format with conservative des
 
 ## Usage and Installation
 
-The CIE app can be accessed on render at the following <a href="[http://example.com/](https://cie-casual-investor-essentials.onrender.com/)" target="_blank">link</a>
+The CIE app can be accessed on render at the following <a href="https://cie-casual-investor-essentials.onrender.com/)" target="_blank">link</a>
 
 To install `CIE-Casual-Investor-Essentials` locally, you can:
 
