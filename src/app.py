@@ -35,7 +35,8 @@ def get_news(stock_ticker):
         
     df = pd.DataFrame(articles)
     df['Date'] = pd.to_datetime(df['Date']) 
-    # df['Formatted Date'] = df['Date'].dt.strftime('%a, %d %B %Y %I:%M %p')
+    df['Published on'] = df['Date'].dt.strftime('%a, %d %b %y %I:%M %p')
+    df = df.reindex(columns=['Title', 'Source', 'Published on', 'Link', 'Date'])
     return df
 
 
@@ -120,9 +121,9 @@ def update_news_table(n_clicks, sort_clicks, ticker='AAPL', sort_by='recent', da
             news_articles_df = news_articles_df.sort_values('Date', ascending=True)
         else:
             news_articles_df = news_articles_df.sort_values('Source', ascending=True)
-        news_articles_df = news_articles_df
+        news_articles_df = news_articles_df.drop(columns=['Date'])
         table_rows = [html.Tr(
-            [html.Th(col, style={'width': '17%'}) if col == 'Date' else html.Th(col) for col in news_articles_df.columns])]
+            [html.Th(col, style={'width': '17%'}) if col == 'Published on' else html.Th(col) for col in news_articles_df.columns])]
         for i in range(len(news_articles_df)):
             table_rows.append(html.Tr([
                 html.Td(news_articles_df.iloc[i][col]) if col != 'Link' else html.Td(html.A('Link', href=news_articles_df.iloc[i]['Link']))
@@ -135,9 +136,9 @@ def update_news_table(n_clicks, sort_clicks, ticker='AAPL', sort_by='recent', da
             news_articles_df = news_articles_df.sort_values('Date', ascending=True)
         else:
             news_articles_df = news_articles_df.sort_values('Source', ascending=True)
-        news_articles_df = news_articles_df
+        news_articles_df = news_articles_df.drop(columns=['Date'])
         table_rows = [html.Tr(
-            [html.Th(col, style={'width': '17%'}) if col == 'Date' else html.Th(col) for col in news_articles_df.columns])]
+            [html.Th(col, style={'width': '17%'}) if col == 'Published on' else html.Th(col) for col in news_articles_df.columns])]
         for i in range(len(news_articles_df)):
             table_rows.append(html.Tr([
                 html.Td(news_articles_df.iloc[i][col]) if col != 'Link' else html.Td(html.A('Link', href=news_articles_df.iloc[i]['Link']))
