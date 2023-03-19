@@ -9,7 +9,7 @@ Data Scientist interested in supporting individuals in their pursuit of financia
 
 **Target audience:** 
 
-The main target audience of the app is casual investors with limited access to financial data who are interested in monitoring companies in which they are interested in investing or in which they currently own shares.
+The main target audience of the app is casual investors with limited access to financial data who would like to monitor companies in which they are interested in investing or in which they currently own shares.
 
 Beginner investors are often overwhelmed by the flood of data available online on any given financial instrument.  The Casual Investor Essentials (CIE) app aims to simplify things and provide an update on a stock price along with the most recent news articles regarding the stock.  In this way the user does not have to switch between multiple screens to get a quick update on what is happening with their company of interest.
 
@@ -22,9 +22,9 @@ The app combines live data from two sources through dedicated Python packages, w
 
 - `Close`: closing price of the stock on a daily basis for a period in days specified by the user.
 
-2. `GoogleNews`: a Python package, which provides access on Google News articles in real time. The package returns Pandas DataFrame based on a stock ticker entered by the user containing the following data:
+2. `GoogleNews`: a webservice, which provides access on Google News articles in real time. The app sends http requests to GoogleNews and buildsd a Pandas DataFrame based on a stock ticker entered by the user containing the following data:
 - `title`: the title of the news article
-- `desc`: summary of the news article
+- `source`: source of the news article
 - `date`: timestamp of when the article was published
 - `link`: a link to the full article on the news article's source website
 
@@ -45,4 +45,4 @@ A typical user from this group would be represented by the following description
 Jane is a young professional working as a Data Scientist in Downtown Vancouver.  She commutes to and from work daily and spends her days working behind a screen.  During her work breaks, during her commute, and while drinking her morning coffee Jane likes to relax and not spend extensive time behind a computer.  She also likes to catch up on companies she holds in her investing portfolio.  Jane is always annoyed when she visits yahoo finance or google news by the flood of information and advertisements which come from big corporate websites.  That is why she wants to use a single app, no ads to see how the companies she is interested in, are trading and what are the latest news on these companies.
 
 
-The Casual Investor Essentials app will provide Jane exactly what she needs.  Yahoo finance has the best publicly available financial data, while Google news does the best job of aggregating news by topic.  So by navigating to CIE app Jan will get both her trading update and the news updates she needs.  The app will minimize her screen time and will not burden her with noise.  
+The Casual Investor Essentials app will provide Jane exactly what she needs.  Yahoo finance has the best publicly available financial data, while Google News does the best job of aggregating news by topic.  So by navigating to CIE app Jane will get both her trading update and the news updates she needs.  The app will minimize her screen time and will not burden her with media noise.  
