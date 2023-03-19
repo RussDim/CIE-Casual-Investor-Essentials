@@ -83,7 +83,11 @@ app.layout = html.Div(style={'backgroundColor': '#f2f2f2'}, children=[
     html.Table(id='news-table', children=[], style={
         'width': '100%',
         'backgroundColor': 'white',  
-        'borderCollapse': 'collapse'})
+        'borderCollapse': 'collapse',
+        '& tr:nthChild(even)':{
+            'bacground-color': '#f2f2f2'
+        }
+        })
 ])
 
 
@@ -115,36 +119,27 @@ def update_stock_chart(n_clicks, ticker='AAPL', days=365):
     State('news-sort-dropdown', 'value')
 )
 def update_news_table(n_clicks, sort_clicks, ticker='AAPL', sort_by='recent', days=365):
-    if n_clicks is None and sort_clicks is None:
-        news_articles_df = get_news(ticker)
-        if sort_by == 'recent':
-            news_articles_df = news_articles_df.sort_values('Date', ascending=True)
-        else:
-            news_articles_df = news_articles_df.sort_values('Source', ascending=True)
-        news_articles_df = news_articles_df.drop(columns=['Date'])
-        table_rows = [html.Tr(
-            [html.Th(col, style={'width': '17%'}) if col == 'Published on' else html.Th(col) for col in news_articles_df.columns])]
-        for i in range(len(news_articles_df)):
-            table_rows.append(html.Tr([
+    news_articles_df = get_news(ticker)
+    if sort_by == 'recent':
+        news_articles_df = news_articles_df.sort_values('Date', ascending=True)
+    else:
+        news_articles_df = news_articles_df.sort_values('Source', ascending=True)
+    news_articles_df = news_articles_df.drop(columns=['Date'])
+
+    table_rows = [
+        html.Thead(
+            html.Tr([html.Th(col, style={'width': '17%'}) if col == 'Published on' else html.Th(col) for col in news_articles_df.columns])
+        ),
+        html.Tbody([
+            html.Tr([
                 html.Td(news_articles_df.iloc[i][col]) if col != 'Link' else html.Td(html.A('Link', href=news_articles_df.iloc[i]['Link']))
                 for col in news_articles_df.columns
-            ]))
-        return html.Table(table_rows)
-    else:     
-        news_articles_df = get_news(ticker)
-        if sort_by == 'recent':
-            news_articles_df = news_articles_df.sort_values('Date', ascending=True)
-        else:
-            news_articles_df = news_articles_df.sort_values('Source', ascending=True)
-        news_articles_df = news_articles_df.drop(columns=['Date'])
-        table_rows = [html.Tr(
-            [html.Th(col, style={'width': '17%'}) if col == 'Published on' else html.Th(col) for col in news_articles_df.columns])]
-        for i in range(len(news_articles_df)):
-            table_rows.append(html.Tr([
-                html.Td(news_articles_df.iloc[i][col]) if col != 'Link' else html.Td(html.A('Link', href=news_articles_df.iloc[i]['Link']))
-            for col in news_articles_df.columns
-        ]))
-    return html.Table(table_rows)
+            ], style={'backgroundColor': '#f2f2f2' if i%2 == 1 else 'white'})
+            for i in range(len(news_articles_df))
+        ])
+    ]
+
+    return table_rows
 
 server = app.server
 
