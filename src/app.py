@@ -6,6 +6,7 @@ from dash import dcc
 from dash import html
 from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
+import datetime
 import requests
 import xml.etree.ElementTree as ET
 import re
@@ -31,10 +32,10 @@ def get_news(stock_ticker):
         articles.append({"Title": title, "Source": description, "Date": pub_date, "Link": link})
         if len(articles) >= 20:
             break
-
+        
     df = pd.DataFrame(articles)
-
-    
+    df['Date'] = pd.to_datetime(df['Date']) 
+    # df['Formatted Date'] = df['Date'].dt.strftime('%a, %d %B %Y %I:%M %p')
     return df
 
 
